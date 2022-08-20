@@ -6,3 +6,7 @@ C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\x64
 C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\x64\Debug\sekirboshka.vcxproj.SuggestedBindingRedirects.cache
 C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\x64\Debug\sekirboshka.MyForm.resources
 C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\x64\Debug\sekirboshka.vcxproj.GenerateResource.cache
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\x64\Debug\sekirboshka.vcxproj.AssemblyReference.cache
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\x64\Debug\sekirboshka.vcxproj.SuggestedBindingRedirects.cache
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\x64\Debug\sekirboshka.MyForm.resources
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\x64\Debug\sekirboshka.vcxproj.GenerateResource.cache

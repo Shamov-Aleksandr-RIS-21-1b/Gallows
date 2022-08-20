@@ -21,72 +21,75 @@ namespace sekirboshka {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
+		//Нельзя внедрить собственный элемент данных в тип CLR.
+		//Однако можно объявить указатель на собственный тип
 	private:
-		std::vector<std::string>* words;//Нельзя внедрить собственный элемент данных в тип CLR.
-		std::vector<std::string>* helps;//Однако можно объявить указатель на собственный тип
-		std::string* full_word;
-		std::string* user_word;
-		int mistakes_count;
+		std::vector<std::string>* words;//массив со словами
+		std::vector<std::string>* helps;//массив с подсказками (индексы соответствуют индексам слов)
+		std::string* full_word;//полное слово
+		std::string* user_word;//слово для отображения пользователю (со звёздочками), переменная необходима для стандартных операций со строками
+		int mistakes_count;//счётчик ошибок
 
 	public:
-		MyForm()
+		MyForm()//конструктор
 		{
-			InitializeComponent();
+			InitializeComponent();//CLR функция для инициализации всех объектов окна
 
-			srand(time(NULL));
+			srand(time(NULL));//подключаем единожды для рандома
 
-			words = new std::vector<std::string>;
+			words = new std::vector<std::string>;//пояснения смотри выше
 			helps = new std::vector<std::string>;
 			full_word = new std::string;
 			user_word = new std::string;
 
-			std::string* tmp = new std::string;
+			std::string* tmp = new std::string;//временная переменная для чтения файлов
 
-			std::ifstream fin;
+			std::ifstream fin;//поток чтения
 
-			fin.open("Words.txt");
-			if (!fin.is_open())
+			fin.open("Words.txt");//открываем слова
+			if (!fin.is_open())//если не удаётся открыть файл
 			{
-				MessageBox::Show(L"Ошибка чтения файла Words.txt", "", MessageBoxButtons::OK, MessageBoxIcon::Error);
-				this->Close();
+				MessageBox::Show(L"Ошибка чтения файла Words.txt", "", MessageBoxButtons::OK, MessageBoxIcon::Error);//окно ошибки
+				this->Close();//экстренное закрытие окна
 			}
-			while (!fin.eof())
+			while (!fin.eof())//пока не считаем весь файл
 			{
-				getline(fin, *tmp);
-				if (*tmp != "")
-					words->push_back(*tmp);
+				getline(fin, *tmp);//построчно считываем слова
+				if (*tmp != "")//во избежание пустого слова !ВНИМАНИЕ! НЕТ ЗАЩИТЫ ОТ НЕКОРРЕКТНОГО ЗАПОЛНЕНИЯ ФАЙЛА (например, два слова в одной строке или лишних символов)
+					words->push_back(*tmp);//в массив добавляем только что считанное слово
 			}
-			fin.close();
+			fin.close();//закрыть файл
 
-			fin.open("Helps.txt");
-			if (!fin.is_open())
+			fin.open("Helps.txt");//открыть файл с подсказками
+			if (!fin.is_open())//аналогично первому файлу
 			{
 				MessageBox::Show(L"Ошибка чтения файла Helps.txt", "", MessageBoxButtons::OK, MessageBoxIcon::Error);
 				this->Close();
 			}
-			while (!fin.eof())
+			while (!fin.eof())//аналогично построчно считываем подсказки
 			{
 				getline(fin, *tmp);
 				if (*tmp != "")
 					helps->push_back(*tmp);
 			}
-			fin.close();
+			fin.close();//обязательно закрыть файл
 
 			delete tmp;
-			tmp = nullptr;
+			tmp = nullptr;//удаление временной переменной
 		}
 
 	protected:
 		/// <summary>
 		/// Освободить все используемые ресурсы.
 		/// </summary>
-		~MyForm()
+		~MyForm()//деструктор
 		{
 			if (components)
 			{
 				delete components;
-			}
+			}//CLR сам удалит все объекты окна
 
+			//чистим память от динамически выделенных массивов
 			delete words;
 			words = nullptr;
 
@@ -99,8 +102,8 @@ namespace sekirboshka {
 			delete user_word;
 			user_word = nullptr;
 		}
-
-	//буквы
+		//буквы
+		//по умолчанию деактивированны все
 	private: System::Windows::Forms::Button^ button1;
 	private: System::Windows::Forms::Button^ button2;
 	private: System::Windows::Forms::Button^ button3;
@@ -134,15 +137,17 @@ namespace sekirboshka {
 	private: System::Windows::Forms::Button^ button31;
 	private: System::Windows::Forms::Button^ button32;
 	private: System::Windows::Forms::Button^ button33;
-	//кнопки управления
-	private: System::Windows::Forms::Button^ buttonStart;
-	private: System::Windows::Forms::Button^ buttonNewWord;
-	private: System::Windows::Forms::Button^ buttonHelp;
-	private: System::Windows::Forms::Button^ buttonClose;
+		   //кнопки управления
+	private: System::Windows::Forms::Button^ buttonStart;//по умолчанию включена
+	private: System::Windows::Forms::Button^ buttonNewWord;//по умолчанию выключена
+	private: System::Windows::Forms::Button^ buttonHelp;//по умолчанию выключена
+	private: System::Windows::Forms::Button^ buttonClose;//по умолчанию включена
 	//текстовая инф-ия
-	private: System::Windows::Forms::Label^ labelWord;
-	private: System::Windows::Forms::Label^ labelHelp;
+	//по умолчанию не отображаются
+	private: System::Windows::Forms::Label^ labelWord;//отображение информации из переменной user_word
+	private: System::Windows::Forms::Label^ labelHelp;//отображение подсказки
 	//картинки
+	//по умолчанию не отображаются все, кроме стартовой
 	private: System::Windows::Forms::PictureBox^ pictureStart;
 	private: System::Windows::Forms::PictureBox^ pictureMistake1;
 	private: System::Windows::Forms::PictureBox^ pictureMistake2;
@@ -847,6 +852,7 @@ namespace sekirboshka {
 			this->buttonNewWord->BackColor = System::Drawing::Color::Transparent;
 			this->buttonNewWord->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"buttonNewWord.BackgroundImage")));
 			this->buttonNewWord->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+			this->buttonNewWord->Enabled = false;
 			this->buttonNewWord->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->buttonNewWord->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -855,14 +861,15 @@ namespace sekirboshka {
 			this->buttonNewWord->Size = System::Drawing::Size(172, 64);
 			this->buttonNewWord->TabIndex = 37;
 			this->buttonNewWord->UseVisualStyleBackColor = false;
+			this->buttonNewWord->Visible = false;
 			this->buttonNewWord->Click += gcnew System::EventHandler(this, &MyForm::buttonNewWord_Click);
-			ButtonOff(buttonNewWord);
 			// 
 			// buttonHelp
 			// 
 			this->buttonHelp->BackColor = System::Drawing::Color::Transparent;
 			this->buttonHelp->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"buttonHelp.BackgroundImage")));
 			this->buttonHelp->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+			this->buttonHelp->Enabled = false;
 			this->buttonHelp->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
 			this->buttonHelp->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 19.8F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
@@ -871,8 +878,8 @@ namespace sekirboshka {
 			this->buttonHelp->Size = System::Drawing::Size(456, 89);
 			this->buttonHelp->TabIndex = 39;
 			this->buttonHelp->UseVisualStyleBackColor = false;
+			this->buttonHelp->Visible = false;
 			this->buttonHelp->Click += gcnew System::EventHandler(this, &MyForm::buttonHelp_Click);
-			ButtonOff(buttonHelp);
 			// 
 			// buttonClose
 			// 
@@ -1080,7 +1087,10 @@ namespace sekirboshka {
 			this->Controls->Add(this->button1);
 			this->Cursor = System::Windows::Forms::Cursors::Default;
 			this->ForeColor = System::Drawing::SystemColors::ActiveCaptionText;
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedDialog;
+			this->MaximizeBox = false;
 			this->Name = L"MyForm";
+			this->ShowIcon = false;
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureStart))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureMistake1))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureMistake2))->EndInit();
@@ -1092,11 +1102,11 @@ namespace sekirboshka {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureLose))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureWin))->EndInit();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
 		//Кнопки, отвечающие за буквы русского алфавита (номер кнопки = номер буквы в алфавите)
+		//при нажатии проверяем, входит ли буква в состав слова
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		CheckLetter(button1);
@@ -1229,72 +1239,77 @@ namespace sekirboshka {
 	{
 		CheckLetter(button33);
 	}
-
-	//Кнопка начала игры
+		   //Кнопка начала игры
 	private: System::Void buttonStart_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		ButtonOff(buttonStart);
-		delete buttonStart;
+		ButtonOff(buttonStart);//кнопка начать игру выключается и больше не включается
+		delete buttonStart;//поэтому её можно удалить
 
-		ButtonOn(buttonNewWord);
-		EnableLetters();
-		ButtonOn(buttonHelp);
-		labelWord->Visible = true;
+		ButtonOn(buttonNewWord);//вместо неё включается кнопка Новое слово
+		EnableLetters();//по умолчанию буквы выключены, включаем
+		ButtonOn(buttonHelp);//так же ключаем кнопку с подсказками
+		labelWord->Visible = true;//слово пользователя теперь всегда отображается
 
-		SetRand();
+		SetRand();//устанавливаем рандомное слово
 
-		mistakes_count = 0;
+		mistakes_count = 0;//пока пользователь не допустил ни одной ошибки, инициализируем
 	}
 
-	//Кнопка, отвечающая за сброс игры и начала заново с новым словом
+		   //Кнопка, отвечающая за сброс игры и начала заново с новым словом
 	private: System::Void buttonNewWord_Click(System::Object^ sender, System::EventArgs^ e)
 	{
 		ButtonOn(buttonHelp);
-		labelHelp->Visible = false;
+		labelHelp->Visible = false;//у нового слова закрыта подсказка
 
-		LettersOn();
+		LettersOn();//некоторые буквы могут быть выключены, поэтому включаем все сразу
 
-		pictureWin->Visible = false;
 		switch (mistakes_count)
 		{
 		case 1:
 		{
+			pictureWin->Visible = false;//пользователь может выйграть при любом кол-ве ошибок, кроме 8, поэтому отключаем
 			pictureMistake1->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 2:
 		{
+			pictureWin->Visible = false;
 			pictureMistake2->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 3:
 		{
+			pictureWin->Visible = false;
 			pictureMistake3->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 4:
 		{
+			pictureWin->Visible = false;
 			pictureMistake4->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 5:
 		{
+			pictureWin->Visible = false;
 			pictureMistake5->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 6:
 		{
+			pictureWin->Visible = false;
 			pictureMistake6->Visible = false;
 			pictureStart->Visible = true;
 			break;
 		}
 		case 7:
 		{
+			pictureWin->Visible = false;
 			pictureMistake7->Visible = false;
 			pictureStart->Visible = true;
 			break;
@@ -1307,58 +1322,57 @@ namespace sekirboshka {
 		}
 		}
 
-		SetRand();
+		SetRand();//аналогично старту игры
 
-		mistakes_count = 0;
+		mistakes_count = 0;//новое слово - необходимо обнулить счётчик
 	}
 
-	//Кнопка, отвечающая за открытие подсказки
+		   //Кнопка, отвечающая за открытие подсказки
 	private: System::Void buttonHelp_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		ButtonOff(buttonHelp);
-		labelHelp->Visible = true;
+		ButtonOff(buttonHelp);//при нажатии на кнопку нужно её выключить
+		labelHelp->Visible = true;//и показать подсказку
 	}
 
-	//Кнопка, отвечающая за закрытие окна
+		   //Кнопка, отвечающая за закрытие окна
 	private: System::Void buttonClose_Click(System::Object^ sender, System::EventArgs^ e)
 	{
-		this->Close();
+		this->Close();// :)
 	}
 
 	private: void SetRand()
 	{
-		if (words->size() == 0)
+		if (words->size() == 0)//в массиве может не хватить слов на игровую сессию
 		{
-			MessageBox::Show(L"Больше нет слов!", "", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			this->Close();
+			MessageBox::Show(L"Больше нет слов!", "", MessageBoxButtons::OK, MessageBoxIcon::Error);//окно ошибки
+			this->Close();//экстренно закрываем окно
 		}
 		else
 		{
-			int random_index = rand() % words->size();
-			*full_word = (*words)[random_index];
-			*user_word = "";
-			labelWord->Text = L"";
-			for (int i = 0; i < full_word->size(); i++)
+			int random_index = rand() % words->size();//рандомный индекс, промежуток: [0, кол-во слов]
+			*full_word = (*words)[random_index];//берём слово с рандомным индексом из массива
+			*user_word = "";//зануляем слово, отображаемое для пользователя
+			for (int i = 0; i < full_word->size(); i++)//по кол-ву букв в слове
 			{
-				*user_word += "*";
+				*user_word += "*";//устанавливаем кол-во звёздочек
 			}
-			labelWord->Text += gcnew String((*user_word).c_str());
-			labelHelp->Text = gcnew String((*helps)[random_index].c_str());
+			labelWord->Text = gcnew String((*user_word).c_str());//в лейбл со словом записываем те самые звёздочки
+			labelHelp->Text = gcnew String((*helps)[random_index].c_str());//в лейбл с подсказкой записываем подсказку с соответствующим индексом
 
-			std::vector<std::string>::iterator del = words->begin() + random_index;
-			words->erase(del);
+			std::vector<std::string>::iterator del = words->begin() + random_index;//итератор указывает на элемент, который только что использовали
+			words->erase(del);//чтобы слова в одной игровой сессии не повторялись, удаляем из массива
 
-			del = helps->begin() + random_index;
+			del = helps->begin() + random_index;//аналогично
 			helps->erase(del);
 		}
 	}
-	private: void Mistake()
+	private: void Mistake()//когда пользователь допустил ошибку
 	{
-		switch (mistakes_count)
+		switch (mistakes_count)//проверяем их кол-во
 		{
 		case 1:
 		{
-			pictureStart->Visible = false;
+			pictureStart->Visible = false;//поочерёдно меняем картинки при совершении ошибок
 			pictureMistake1->Visible = true;
 			break;
 		}
@@ -1400,29 +1414,29 @@ namespace sekirboshka {
 		}
 		case 8:
 		{
-			Lose();
+			Lose();//после 7 попыток следует проигрышь
 			break;
 		}
 		}
 	}
-	private: void Lose()
+	private: void Lose()//проигрышь
 	{
-		pictureMistake7->Visible = false;
-		pictureLose->Visible = true;
-		ButtonOff(buttonHelp);
-		DisableLetters();
-		labelHelp->Visible = true;
-		labelHelp->Text = L"ВЫ ПРОИГРАЛИ :(";
-		labelWord->Text = gcnew String((*full_word).c_str());
+		pictureMistake7->Visible = false;//после седьмой попытки, поэтому выключаем эту картинку
+		pictureLose->Visible = true;//вместо неё отображается картинка проигрыша
+		ButtonOff(buttonHelp);//кнопка с подсказкой могла быть не нажата, поэтому принудительно её выключаем
+		DisableLetters();//не даём больше нажимать на буквы
+		labelHelp->Visible = true;//активируем лейбл с подсказкой 
+		labelHelp->Text = L"ВЫ ПРОИГРАЛИ :(";//и пишем в него сообщение
+		labelWord->Text = gcnew String((*full_word).c_str());//открываем пользователю слово
 	}
-	private: void Win()
+	private: void Win()//победа
 	{
-		switch (mistakes_count)
+		switch (mistakes_count)//в зависимости от кол-ва допущенных ошибок
 		{
 		case 1:
 		{
-			pictureMistake1->Visible = false;
-			pictureWin->Visible = true;
+			pictureMistake1->Visible = false;//выключаем картинку с ошибкой
+			pictureWin->Visible = true;//и включаем картинку выигрыша
 			break;
 		}
 		case 2:
@@ -1461,59 +1475,56 @@ namespace sekirboshka {
 			pictureWin->Visible = true;
 			break;
 		}
-		case 8:
-		{
-			pictureLose->Visible = false;
-			pictureWin->Visible = true;
-			break;
 		}
-		}
-		labelHelp->Text = L"ВЫ УГАДАЛИ СЛОВО!";
+		ButtonOff(buttonHelp);//кнопка с подсказкой могла быть не нажата, поэтому принудительно её выключаем
+		DisableLetters();//не даём больше нажимать на буквы
+		labelHelp->Visible = true;//активируем лейбл с подсказкой 
+		labelHelp->Text = L"ВЫ УГАДАЛИ СЛОВО!";//и пишем в него сообщение
 	}
-	private: void CheckLetter(System::Object^ sender)
+	private: void CheckLetter(System::Object^ sender)//проверка буквы
 	{
-		Button^ button = (Button^)sender;
-		ButtonOff(button);
-		msclr::interop::marshal_context context;
+		Button^ button = (Button^)sender;//преобразуем указатель на отправителя в указатель на кнопку
+		ButtonOff(button);//выключаем букву
+		msclr::interop::marshal_context context;//преобразование текста буквы в строку
 		std::string letter = context.marshal_as<std::string>(button->Text);
-		bool find_letter = false;
+		bool find_letter = false;//флаг на то, нашлась ли буква, пока не нашлась
 
-		for (int i = 0; i < full_word->size(); i++)
+		for (int i = 0; i < full_word->size(); i++)//проходим по всему слову
 		{
-			if ((*full_word)[i] == letter[0])
+			if ((*full_word)[i] == letter[0])//если в слове есть выбранная пользователем буква
 			{
-				(*user_word)[i] = letter[0];
-				find_letter = true;
+				(*user_word)[i] = letter[0];//открываем её
+				find_letter = true;//нашли хотя бы одну букву
 			}
 		}
 
-		if (find_letter)
+		if (find_letter)//если нашли хотя бы одну выбранную букву
 		{
-			labelWord->Text = gcnew String((*user_word).c_str());
-			if (user_word->find('*') == -1)
+			labelWord->Text = gcnew String((*user_word).c_str());//переприсваиваем лейбл, чтобы открыть букву
+			if (user_word->find('*') == -1)//если в слове пользователя не осталось звёздочек - он открыл все буквы
 			{
-				Win();
+				Win();//ура победа
 			}
 		}
-		else
+		else//не нашли ни одной буквы
 		{
-			++mistakes_count;
-			Mistake();
+			++mistakes_count;//совершена ошибка
+			Mistake();//обрабатываем ошибку
 		}
 	}
-	private: void ButtonOn(System::Object^ sender)
+	private: void ButtonOn(System::Object^ sender)//включение кнопки подразумевает её активацию и отображение
 	{
 		Button^ button = (Button^)sender;
 		button->Visible = true;
 		button->Enabled = true;
 	}
-	private: void ButtonOff(System::Object^ sender)
+	private: void ButtonOff(System::Object^ sender)//выключение - деактивация и скрытие
 	{
 		Button^ button = (Button^)sender;
 		button->Visible = false;
 		button->Enabled = false;
 	}
-	private: void LettersOn()
+	private: void LettersOn()//включение всех букв
 	{
 		ButtonOn(button1);
 		ButtonOn(button2);
@@ -1549,7 +1560,7 @@ namespace sekirboshka {
 		ButtonOn(button32);
 		ButtonOn(button33);
 	}
-	private: void DisableLetters()
+	private: void DisableLetters()//только деактивация всех букв
 	{
 		button1->Enabled = false;
 		button2->Enabled = false;
@@ -1586,7 +1597,7 @@ namespace sekirboshka {
 		button32->Enabled = false;
 		button33->Enabled = false;
 	}
-	private: void EnableLetters()
+	private: void EnableLetters()//только активация всех букв
 	{
 		button1->Enabled = true;
 		button2->Enabled = true;
@@ -1623,5 +1634,5 @@ namespace sekirboshka {
 		button32->Enabled = true;
 		button33->Enabled = true;
 	}
-};
+	};
 }

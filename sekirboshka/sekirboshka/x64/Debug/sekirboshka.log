@@ -1,5 +1,5 @@
 ﻿  MyForm.cpp
-C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\MyForm.h(36,14): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\Александр\source\repos\sekirboshka\sekirboshka\sekirboshka\MyForm.cpp(8,1): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\MyForm.h(38,14): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\Александр\source\repos\Gallows\sekirboshka\sekirboshka\MyForm.cpp(8,1): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
   MyForm.obj : обнаружен модуль MSIL; для MSIL последовательная компоновка отключена; выполняется полная компоновка
-  sekirboshka.vcxproj -> C:\Users\Александр\source\repos\sekirboshka\sekirboshka\x64\Debug\sekirboshka.exe
+  sekirboshka.vcxproj -> C:\Users\Александр\source\repos\Gallows\sekirboshka\x64\Debug\sekirboshka.exe
