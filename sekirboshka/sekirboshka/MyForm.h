@@ -1485,7 +1485,7 @@ namespace sekirboshka {
 	{
 		Button^ button = (Button^)sender;//преобразуем указатель на отправителя в указатель на кнопку
 		ButtonOff(button);//выключаем букву
-		msclr::interop::marshal_context context;//преобразование текста буквы в строку
+		msclr::interop::marshal_context context;//преобразование текста буквы в строку, сам текст буквы отображается под спрайтом кнопки, поэтому его не видно
 		std::string letter = context.marshal_as<std::string>(button->Text);
 		bool find_letter = false;//флаг на то, нашлась ли буква, пока не нашлась
 
