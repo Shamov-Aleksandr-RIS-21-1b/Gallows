@@ -1,0 +1,6 @@
+﻿  MyForm.cpp
+C:\Users\Фвы\source\repos\sekirboshka\sekirboshka\MyForm.cpp(8,1): warning C4829: Возможно, неправильные параметры функции main. Рекомендуемый вариант - "int main(Platform::Array<Platform::String^>^ argv)"
+  .NETFramework,Version=v4.7.2.AssemblyAttributes.cpp
+  Создание кода...
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(1074,5): error : Элемент <SubSystem> имеет недопустимое значение "Windows (/SUBSISTEM:WINDOWS)".
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(1074,5): error MSB6011: в задачу Microsoft.Build.CPPTasks.Link переданы недопустимые параметры.
